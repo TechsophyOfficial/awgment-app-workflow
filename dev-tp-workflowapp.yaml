@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workflow-app
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: workflow-app
+  template:
+    metadata:
+      labels:
+        name: workflow-app
+    spec:
+      containers:
+      - image: tsdevopsteam/platform:workflow-app-$BUILD_NUMBER
+        name: workflow-app
+        envFrom:
+        - configMapRef:
+            name: app-env
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+      - name: ts-platform
+        
+      
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workflow-app
+  namespace: dev
+spec:
+  type: ClusterIP
+  ports: 
+  - port: 8080
+  selector:
+    name: workflow-app

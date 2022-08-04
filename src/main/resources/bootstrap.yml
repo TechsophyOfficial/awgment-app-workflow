@@ -1,0 +1,6 @@
+spring.application.name: tp-app-workflow
+spring.profiles.active: dev
+spring.cloud.config.uri: ${GATEWAY_URI}/config-server
+management.endpoints.web.exposure.include: refresh
+management.endpoints.web.base-path: /process-modeler
+management.endpoints.web.path-mapping.refresh: refresh
