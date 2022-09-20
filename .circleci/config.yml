@@ -1,0 +1,72 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+jobs:
+
+  releaseMS:
+    docker:
+      - image: cimg/openjdk:11.0.11
+    steps:
+      - checkout
+      - run:
+          name: fix permission denied
+          command: chmod +x ./gradlew
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - restore_cache:
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+      - run:
+          name: Install dependencies
+          command: ./gradlew clean build
+      # - attach_workspace:
+      #     at: build
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+
+      - run: |
+          if [[ -z "$CIRCLE_TAG" ]] ;  then exit 1; fi
+          TAG=$CIRCLE_TAG
+          echo $TS_DOCKER_PUB_PASS | docker login -u $TS_DOCKER_PUB_USR --password-stdin
+          REPONAME=$TS_DOCKER_PUB_USR/$CIRCLE_PROJECT_REPONAME
+          docker build . -t $REPONAME:$TAG
+          #docker tag $REPONAME:latest $REPONAME:$TAG
+          docker push $REPONAME:$TAG
+
+
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+workflows:
+  tagged-release:
+    jobs:
+      - releaseMS:
+          context: ossContext
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+
+  # tagged-build:
+  #   jobs:
+  #     - buildMS:
+  #         filters:
+  #           tags:
+  #             only: /v*.*/
+  # main-build:
+  #   jobs:
+  #     - buildMS:
+  #         filters:
+  #           branches:
+  #             only:
+  #               - main
