@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith({SpringExtension.class})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles(TEST_ACTIVE_PROFILE)
-class gfWebClientWrapperTest
+class WebClientWrapperTest
 {
     @InjectMocks
     WebClientWrapper webClientWrapper;

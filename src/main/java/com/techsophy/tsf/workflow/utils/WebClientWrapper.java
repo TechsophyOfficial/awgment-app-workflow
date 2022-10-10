@@ -1,5 +1,6 @@
 package com.techsophy.tsf.workflow.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techsophy.tsf.workflow.config.GlobalMessageSource;
 import com.techsophy.tsf.workflow.exception.ExternalServiceErrorException;
@@ -111,7 +112,7 @@ public class WebClientWrapper
         }
     }
 
-    public String availableMethod(Exception ex) throws Exception {
+    public String availableMethod(Exception ex) throws JsonProcessingException {
         String abc = ex.getMessage();
         Map<String,Object> map = this.objectMapper.readValue(abc, Map.class);
         throw new ExternalServiceErrorException(SERVICE_NOT_AVAILABLE,globalMessageSource.get(SERVICE_NOT_AVAILABLE, String.valueOf(map.get("path"))));
