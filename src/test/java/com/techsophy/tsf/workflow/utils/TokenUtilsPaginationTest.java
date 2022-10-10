@@ -91,11 +91,4 @@ class TokenUtilsPaginationTest
                 .isThrownBy(() -> tokenUtils.getLoggedInUserId());
     }
 
-    @Test
-    void getSortByTest()
-    {
-        String[] dogs = {"Pitbull", "Poodle", "Lab", "Pug"};
-        Sort response = tokenUtils.getSortBy(dogs);
-        Assertions.assertNotNull(response);
-    }
 }
