@@ -55,7 +55,7 @@ class WorkflowServiceTest
     @Mock
     WorkflowAuditService workflowAuditService;
     @InjectMocks
-    WorkflowServiceImpl mockWorkflowServiceImpl;
+    WorkflowServiceImpl workflowServiceImpl;
     @Mock
     TokenUtils tokenUtils;
     List<Map<String, Object>> userList = new ArrayList<>();
@@ -95,7 +95,7 @@ class WorkflowServiceTest
         when(this.mockObjectMapper.convertValue(any(), eq(WorkflowDefinition.class))).thenReturn(workflowDefinitionTest);
         when(mockWorkflowDefinitionRepository.save(any())).thenReturn(workflowDefinitionTest.withId(BigInteger.valueOf(Long.parseLong(PROCESS_ID))));
         when(this.mockObjectMapper.convertValue(any(), eq(WorkflowResponse.class))).thenReturn(new WorkflowResponse(PROCESS_ID, PROCESS_VERSION));
-        mockWorkflowServiceImpl.saveProcess(null, PROCESS_NAME, PROCESS_VERSION, Arrays.toString(PROCESS_CONTENT));
+        workflowServiceImpl.saveProcess(null, PROCESS_NAME, PROCESS_VERSION, Arrays.toString(PROCESS_CONTENT));
         verify(mockWorkflowDefinitionRepository, times(1)).save(any());
     }
 
@@ -117,7 +117,7 @@ class WorkflowServiceTest
         when(this.mockObjectMapper.convertValue(any(), eq(WorkflowResponse.class))).thenReturn(new WorkflowResponse(PROCESS_ID, PROCESS_VERSION));
         when(mockWorkflowDefinitionRepository.existsById(BigInteger.valueOf(Long.parseLong(PROCESS_ID)))).thenReturn(true);
         when(mockWorkflowDefinitionRepository.findById(BigInteger.valueOf(Long.parseLong(PROCESS_ID)))).thenReturn(Optional.of(workflowDefinitionTest));
-        mockWorkflowServiceImpl.saveProcess(PROCESS_ID, PROCESS_NAME, PROCESS_VERSION, Arrays.toString(PROCESS_CONTENT));
+        workflowServiceImpl.saveProcess(PROCESS_ID, PROCESS_NAME, PROCESS_VERSION, Arrays.toString(PROCESS_CONTENT));
         verify(mockWorkflowDefinitionRepository, times(1)).save(any());
     }
 
@@ -139,7 +139,7 @@ class WorkflowServiceTest
         when(this.mockObjectMapper.convertValue(any(), eq(WorkflowResponse.class))).thenReturn(new WorkflowResponse(PROCESS_ID, PROCESS_VERSION));
         when(mockWorkflowDefinitionRepository.existsById(BigInteger.valueOf(Long.parseLong(PROCESS_ID)))).thenReturn(false);
         when(mockWorkflowDefinitionRepository.findById(BigInteger.valueOf(Long.parseLong(PROCESS_ID)))).thenReturn(Optional.of(workflowDefinitionTest));
-        mockWorkflowServiceImpl.saveProcess(PROCESS_ID, PROCESS_NAME, PROCESS_VERSION, Arrays.toString(PROCESS_CONTENT));
+        workflowServiceImpl.saveProcess(PROCESS_ID, PROCESS_NAME, PROCESS_VERSION, Arrays.toString(PROCESS_CONTENT));
         verify(mockWorkflowDefinitionRepository, times(1)).save(any());
     }
 
@@ -153,7 +153,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findById(BigInteger.valueOf(Long.parseLong(String.valueOf(1))))).thenReturn(java.util.Optional.ofNullable(workflowDefinitionTest));
-        mockWorkflowServiceImpl.getProcessById(PROCESS_ID);
+        workflowServiceImpl.getProcessById(PROCESS_ID);
         verify(mockWorkflowDefinitionRepository,times(1)).findById(BigInteger.valueOf(1));
     }
 
@@ -171,7 +171,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findWorkflowsByQSorting(any(), any())).thenReturn(Stream.of(workflowDefinitionTest));
-         mockWorkflowServiceImpl.getAllProcesses(true,null,Q,sort).toList();
+         workflowServiceImpl.getAllProcesses(true,null,Q,sort).toList();
         verify(mockWorkflowDefinitionRepository,times(1)).findWorkflowsByQSorting(any(), any());
     }
     @Test
@@ -188,7 +188,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findWorkflowsByQSorting(any(), any())).thenReturn(Stream.of(workflowDefinitionTest));
-        mockWorkflowServiceImpl.getAllProcesses(false,null,Q,sort).toList();
+        workflowServiceImpl.getAllProcesses(false,null,Q,sort).toList();
         verify(mockWorkflowDefinitionRepository,times(1)).findWorkflowsByQSorting(any(), any());
     }
     @Test
@@ -201,7 +201,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findAll((Sort) any())).thenReturn(List.of(workflowDefinitionTest));
-         mockWorkflowServiceImpl.getAllProcesses(true,null,null, null).toList();
+         workflowServiceImpl.getAllProcesses(true,null,null, null).toList();
         verify(mockWorkflowDefinitionRepository,times(1)).findAll((Sort) any());
     }
     @Test
@@ -214,7 +214,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findAll((Sort) any())).thenReturn(List.of(workflowDefinitionTest));
-        mockWorkflowServiceImpl.getAllProcesses(false,null,null, null).toList();
+        workflowServiceImpl.getAllProcesses(false,null,null, null).toList();
         verify(mockWorkflowDefinitionRepository,times(1)).findAll((Sort) any());
     }
     @Test
@@ -227,7 +227,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findByIdIn(any())).thenReturn(List.of(workflowDefinitionTest));
-        mockWorkflowServiceImpl.getAllProcesses(true,DEPLOYMENT_ID_LIST,null, null).toList();
+        workflowServiceImpl.getAllProcesses(true,DEPLOYMENT_ID_LIST,null, null).toList();
         verify(mockWorkflowDefinitionRepository,times(1)).findByIdIn(any());
     }
 
@@ -236,7 +236,7 @@ class WorkflowServiceTest
     {
         when(mockWorkflowDefinitionRepository.existsById(BigInteger.valueOf(1))).thenReturn(true);
         when(mockWorkflowDefinitionRepository.deleteById(BigInteger.valueOf(1))).thenReturn(Integer.valueOf(PROCESS_ID));
-        mockWorkflowServiceImpl.deleteProcessById(PROCESS_ID);
+        workflowServiceImpl.deleteProcessById(PROCESS_ID);
         verify(mockWorkflowDefinitionRepository,times(1)).deleteById(BigInteger.valueOf(1));
     }
 
@@ -250,7 +250,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findByNameOrId(TEST_ID_OR_NAME_LIKE)).thenReturn(Collections.singletonList(workflowDefinitionTest));
-        mockWorkflowServiceImpl.searchProcessByIdOrNameLike(TEST_ID_OR_NAME_LIKE);
+        workflowServiceImpl.searchProcessByIdOrNameLike(TEST_ID_OR_NAME_LIKE);
         verify(mockWorkflowDefinitionRepository,times(1)).findByNameOrId(TEST_ID_OR_NAME_LIKE);
     }
 
@@ -266,8 +266,8 @@ class WorkflowServiceTest
         when(mockWorkflowDefinitionRepository.findAll(pageable)).thenReturn(page);
         when(mockWorkflowDefinitionRepository.findWorkflowsByQPageable(Q,pageable)).thenReturn(page);
         when(tokenUtils.getPaginationResponsePayload(page,list)).thenReturn(paginationResponsePayload);
-        mockWorkflowServiceImpl.getAllProcesses(null,true,pageable);
-        mockWorkflowServiceImpl.getAllProcesses(Q,true,pageable);
+        workflowServiceImpl.getAllProcesses(null,true,pageable);
+        workflowServiceImpl.getAllProcesses(Q,true,pageable);
         verify(mockWorkflowDefinitionRepository,times(1)).findAll((Pageable) any());
         verify(mockWorkflowDefinitionRepository,times(1)).findWorkflowsByQPageable(any(),any());
     }
