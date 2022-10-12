@@ -11,6 +11,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
@@ -115,6 +116,24 @@ class TokenUtilsTest
         PaginationResponsePayload response=tokenUtils.getPaginationResponsePayload(page,Collections.emptyList());
         Assertions.assertNotNull(response);
     }
+//    @Test
+//    void getTokenFromContextAuthentication()
+//    {
+//        try (MockedStatic<SecurityContextHolder> dummy = Mockito.mockStatic(SecurityContextHolder.class)) {
+//            dummy.when(() -> SecurityContextHolder.getContext())
+//                    .thenReturn(null);
+//            Assertions.assertThrows(SecurityException.class,()->tokenUtils.getTokenFromContext());
+//        }
+////        Authentication authentication = mock(Authentication.class);
+////        SecurityContext securityContext = mock(SecurityContext.class);
+////        SecurityContextHolder securityContextHolder = mock(SecurityContextHolder.class);
+////        Mockito.when(securityContext.getAuthentication()).thenReturn(null);
+////        Mockito.when(SecurityContextHolder.getContext()).thenReturn(null);
+////        SecurityContextHolder.setContext(securityContext);
+////        Jwt jwt= mock(Jwt.class);
+////        when(authentication.getPrincipal()).thenReturn(jwt);
+////        Assertions.assertThrows(SecurityException.class,()->tokenUtils.getTokenFromContext());
+//    }
 
     @Test
     void getPageExceptionTest()
