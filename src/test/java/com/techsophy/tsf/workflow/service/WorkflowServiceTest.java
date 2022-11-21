@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static com.techsophy.tsf.workflow.constants.WorkflowTestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -171,7 +172,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findWorkflowsByQSorting(any(), any())).thenReturn(Stream.of(workflowDefinitionTest));
-         workflowServiceImpl.getAllProcesses(true,null,Q,sort).toList();
+         workflowServiceImpl.getAllProcesses(true,null,Q,sort).collect(Collectors.toList());
         verify(mockWorkflowDefinitionRepository,times(1)).findWorkflowsByQSorting(any(), any());
     }
     @Test
@@ -188,7 +189,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findWorkflowsByQSorting(any(), any())).thenReturn(Stream.of(workflowDefinitionTest));
-        workflowServiceImpl.getAllProcesses(false,null,Q,sort).toList();
+        workflowServiceImpl.getAllProcesses(false,null,Q,sort).collect(Collectors.toList());
         verify(mockWorkflowDefinitionRepository,times(1)).findWorkflowsByQSorting(any(), any());
     }
     @Test
@@ -201,7 +202,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findAll((Sort) any())).thenReturn(List.of(workflowDefinitionTest));
-         workflowServiceImpl.getAllProcesses(true,null,null, null).toList();
+         workflowServiceImpl.getAllProcesses(true,null,null, null).collect(Collectors.toList());
         verify(mockWorkflowDefinitionRepository,times(1)).findAll((Sort) any());
     }
     @Test
@@ -214,7 +215,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findAll((Sort) any())).thenReturn(List.of(workflowDefinitionTest));
-        workflowServiceImpl.getAllProcesses(false,null,null, null).toList();
+        workflowServiceImpl.getAllProcesses(false,null,null, null).collect(Collectors.toList());
         verify(mockWorkflowDefinitionRepository,times(1)).findAll((Sort) any());
     }
     @Test
@@ -227,7 +228,7 @@ class WorkflowServiceTest
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findByIdIn(any())).thenReturn(List.of(workflowDefinitionTest));
-        workflowServiceImpl.getAllProcesses(true,DEPLOYMENT_ID_LIST,null, null).toList();
+        workflowServiceImpl.getAllProcesses(true,DEPLOYMENT_ID_LIST,null, null).collect(Collectors.toList());
         verify(mockWorkflowDefinitionRepository,times(1)).findByIdIn(any());
     }
 

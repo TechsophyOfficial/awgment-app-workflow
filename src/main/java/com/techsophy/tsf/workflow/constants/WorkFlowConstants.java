@@ -130,7 +130,7 @@ public class WorkFlowConstants
 
     //JWTRoleConverter
     public static final String CLIENT_ROLES="clientRoles";
-    public static final String USER_INFO_URL= "techsophy-platform/protocol/openid-connect/userinfo";
+    public static final String USER_INFO_URL= "/protocol/openid-connect/userinfo";
     public static final String TOKEN_VERIFICATION_FAILED="Token verification failed";
     public static final String AWGMENT_ROLES_MISSING_IN_CLIENT_ROLES ="AwgmentRoles are missing in clientRoles";
     public static final String CLIENT_ROLES_MISSING_IN_USER_INFORMATION="ClientRoles are missing in the userInformation";
