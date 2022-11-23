@@ -43,7 +43,7 @@ public class JWTRoleConverter implements Converter<Jwt, Collection<GrantedAuthor
         List<String> awgmentRolesList =new ArrayList<>();
         String token= jwt.getTokenValue();
         var client = webClientWrapper.createWebClient(token);
-        String userInfoResponse = webClientWrapper.webclientRequest(client,keyCloakApi+tokenUtils.getIssuerFromToken(tokenUtils.getTokenFromContext())+USER_INFO_URL,GET,null);
+        String userInfoResponse = webClientWrapper.webclientRequest(client,keyCloakApi+tokenUtils.getIssuerFromToken(jwt.getTokenValue())+USER_INFO_URL,GET,null);
         if(userInfoResponse.isEmpty())
         {
             logger.info(TOKEN_VERIFICATION_FAILED);
