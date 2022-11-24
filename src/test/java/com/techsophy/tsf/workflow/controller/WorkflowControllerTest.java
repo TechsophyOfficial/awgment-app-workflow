@@ -86,7 +86,7 @@ class WorkflowControllerTest
     void saveProcessTest() throws Exception
     {
         ObjectMapper objectMapperTest = new ObjectMapper();
-        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         Mockito.when(mockTokenUtils.getIssuerFromToken(TOKEN)).thenReturn(TENANT);
         Mockito.when(mockWorkflowService.saveProcess(PROCESS_ID, PROCESS_NAME, PROCESS_VERSION, Arrays.toString(PROCESS_CONTENT))).thenReturn(new WorkflowResponse(PROCESS_ID, PROCESS_VERSION));
         RequestBuilder requestBuilderTest= MockMvcRequestBuilders.post(BASE_URL_PROCESS + VERSION_V1 + PROCESSES_URL)
@@ -101,9 +101,9 @@ class WorkflowControllerTest
     void getProcessByIdTest() throws Exception
     {
         ObjectMapper objectMapperTest = new ObjectMapper();
-        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         Mockito.when(mockTokenUtils.getIssuerFromToken(TOKEN)).thenReturn(TENANT);
-        Mockito.when(mockWorkflowService.getProcessById(PROCESS_ID)).thenReturn(new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME));
+        Mockito.when(mockWorkflowService.getProcessById(PROCESS_ID)).thenReturn(new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW));
         RequestBuilder requestBuilderTest=MockMvcRequestBuilders.get(BASE_URL_PROCESS + VERSION_V1 + PROCESSES_BY_ID_URL,1)
                 .with(jwtRead)
                 .contentType(MediaType.APPLICATION_JSON);
@@ -126,12 +126,12 @@ class WorkflowControllerTest
     void searchProcessByIdOrNameLike() throws Exception
     {
         ObjectMapper objectMapperTest=new ObjectMapper();
-        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         Mockito.when(mockTokenUtils.getIssuerFromToken(TOKEN)).thenReturn(TENANT);
         Mockito.when(mockWorkflowService.searchProcessByIdOrNameLike(TEST_ID_OR_NAME_LIKE)).thenReturn(
                 Stream.of(
-                        new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME),
-                        new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME)));
+                        new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW),
+                        new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW)));
         RequestBuilder requestBuilderTest=MockMvcRequestBuilders.get(BASE_URL_PROCESS + VERSION_V1 + SEARCH_PROCESSES_URL)
             .param(PARAM_ID_OR_NAME_LIKE,PARAM_ID_OR_NAME_LIKE_VALUE)
                 .with(jwtRead)

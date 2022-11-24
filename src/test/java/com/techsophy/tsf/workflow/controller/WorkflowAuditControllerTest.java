@@ -77,7 +77,7 @@ class WorkflowAuditControllerTest
     {
         ObjectMapper objectMapperTest=new ObjectMapper();
         Mockito.when(mockTokenUtils.getIssuerFromToken(TOKEN)).thenReturn(TENANT);
-        WorkflowAuditSchema workflowAuditSchema=new WorkflowAuditSchema(TEST_ID,PROCESS_ID, PROCESS_NAME,1, PROCESS_CONTENT , CREATED_BY_ID_VALUE, CREATED_ON_NOW, NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowAuditSchema workflowAuditSchema=new WorkflowAuditSchema(PROCESS_ID,PROCESS_ID, PROCESS_NAME,PROCESS_VERSION, PROCESS_CONTENT, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         WorkflowResponse workflowResponse=new WorkflowResponse(TEST_ID,PROCESS_VERSION);
         Mockito.when(workflowAuditService.saveProcess(workflowAuditSchema)).thenReturn(workflowResponse);
         RequestBuilder requestBuilderTest = MockMvcRequestBuilders.post(BASE_URL+VERSION_V1+ HISTORY+PROCESSES_URL)
@@ -91,7 +91,7 @@ class WorkflowAuditControllerTest
     void getProcessByIdTest() throws Exception
     {
         Mockito.when(mockTokenUtils.getIssuerFromToken(TOKEN)).thenReturn(TENANT);
-        WorkflowAuditSchema workflowAuditSchema=new WorkflowAuditSchema(TEST_ID,PROCESS_ID, PROCESS_NAME,1, PROCESS_CONTENT , CREATED_BY_ID_VALUE, CREATED_ON_NOW, NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowAuditSchema workflowAuditSchema=new WorkflowAuditSchema(PROCESS_ID,PROCESS_ID, PROCESS_NAME,PROCESS_VERSION, PROCESS_CONTENT, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         Mockito.when(workflowAuditService.getProcessById(TEST_ID,PROCESS_VERSION)).thenReturn(workflowAuditSchema);
         RequestBuilder requestBuilderTest = MockMvcRequestBuilders.get(BASE_URL+VERSION_V1+ HISTORY+PROCESS_VERSION_BY_ID_URL,1,1)
                 .with(jwtRead)
@@ -104,7 +104,7 @@ class WorkflowAuditControllerTest
     void getAllProcessesPaginationTest() throws Exception
     {
         Mockito.when(mockTokenUtils.getIssuerFromToken(TOKEN)).thenReturn(TENANT);
-        WorkflowAuditSchema workflowAuditSchema=new WorkflowAuditSchema(TEST_ID,PROCESS_ID, PROCESS_NAME,1, PROCESS_CONTENT , CREATED_BY_ID_VALUE, CREATED_ON_NOW, NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowAuditSchema workflowAuditSchema=new WorkflowAuditSchema(PROCESS_ID,PROCESS_ID, PROCESS_NAME,PROCESS_VERSION, PROCESS_CONTENT, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         Mockito.when(workflowAuditService.getAllProcesses(TEST_ID,true, Sort.by(NAME))).thenReturn(Stream.of(workflowAuditSchema));
         RequestBuilder requestBuilderTest = MockMvcRequestBuilders.get(BASE_URL+VERSION_V1+ HISTORY+PROCESSES_BY_ID_URL,1)
                 .param(INCLUDE_CONTENT,TRUE).param(PAGE,PAGE_VALUE).param(SIZE,SIZE_VALUE)

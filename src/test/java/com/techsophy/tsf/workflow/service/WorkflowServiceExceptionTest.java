@@ -81,7 +81,7 @@ class WorkflowServiceExceptionTest
     @Test
     void getWorkflowByIdExceptionTest()
     {
-        WorkflowSchema workflowSchemaTest =new WorkflowSchema(PROCESS_ID, PROCESS_NAME,PROCESS_CONTENT,PROCESS_VERSION, CREATED_BY_ID_VALUE,CREATED_ON_NOW, NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest =new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findById(BigInteger.valueOf(Long.parseLong(String.valueOf(1))))).thenReturn(Optional.empty());
         Assertions.assertThrows(ProcessIdNotFoundException.class,()-> mockWorkflowServiceImpl.getProcessById(PROCESS_ID));
