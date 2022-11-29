@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static com.techsophy.tsf.workflow.constants.WorkflowTestConstants.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -87,7 +88,7 @@ class WorkflowServiceTest
         @Cleanup InputStream inputStreamTest = new ClassPathResource(TEST_PROCESSES_DATA_2).getInputStream();
         String workflowDataTest = new String(inputStreamTest.readAllBytes());
         WorkflowDefinition workflowDefinitionTest = objectMapperTest.readValue(workflowDataTest, WorkflowDefinition.class);
-        WorkflowAuditSchema workflowAuditSchemaTest=new WorkflowAuditSchema(PROCESS_ID,PROCESS_ID, PROCESS_NAME,PROCESS_VERSION, PROCESS_CONTENT, CREATED_BY_ID_VALUE, CREATED_ON_NOW,CREATED_BY_NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowAuditSchema workflowAuditSchemaTest=new WorkflowAuditSchema(PROCESS_ID,PROCESS_ID, PROCESS_NAME,PROCESS_VERSION, PROCESS_CONTENT, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         when(mockUserDetails.getUserDetails())
                 .thenReturn(userList);
         when(idGenerator.nextId()).thenReturn(BigInteger.valueOf(Long.parseLong(PROCESS_ID)));
@@ -106,7 +107,7 @@ class WorkflowServiceTest
         @Cleanup InputStream inputStreamTest = new ClassPathResource(TEST_PROCESSES_DATA_1).getInputStream();
         String workflowDataTest = new String(inputStreamTest.readAllBytes());
         WorkflowDefinition workflowDefinitionTest = objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
-        WorkflowAuditSchema workflowAuditSchemaTest=new WorkflowAuditSchema(PROCESS_ID,PROCESS_ID, PROCESS_NAME,PROCESS_VERSION, PROCESS_CONTENT, CREATED_BY_ID_VALUE, CREATED_ON_NOW,CREATED_BY_NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowAuditSchema workflowAuditSchemaTest=new WorkflowAuditSchema(PROCESS_ID,PROCESS_ID, PROCESS_NAME,PROCESS_VERSION, PROCESS_CONTENT, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         Mockito.when(mockUserDetails.getUserDetails())
                 .thenReturn(userList);
         when(this.mockObjectMapper.convertValue(any(), eq(WorkflowDefinition.class)))
@@ -128,7 +129,7 @@ class WorkflowServiceTest
         @Cleanup InputStream inputStreamTest = new ClassPathResource(TEST_PROCESSES_DATA_1).getInputStream();
         String workflowDataTest = new String(inputStreamTest.readAllBytes());
         WorkflowDefinition workflowDefinitionTest = objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
-        WorkflowAuditSchema workflowAuditSchemaTest=new WorkflowAuditSchema(PROCESS_ID,PROCESS_ID, PROCESS_NAME,PROCESS_VERSION, PROCESS_CONTENT, CREATED_BY_ID_VALUE, CREATED_ON_NOW,CREATED_BY_NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowAuditSchema workflowAuditSchemaTest=new WorkflowAuditSchema(PROCESS_ID,PROCESS_ID, PROCESS_NAME,PROCESS_VERSION, PROCESS_CONTENT, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         Mockito.when(mockUserDetails.getUserDetails())
                 .thenReturn(userList);
         when(this.mockObjectMapper.convertValue(any(), eq(WorkflowDefinition.class)))
@@ -149,7 +150,7 @@ class WorkflowServiceTest
         ObjectMapper objectMapperTest = new ObjectMapper();
         @Cleanup InputStream inputStreamTest = new ClassPathResource(TEST_PROCESSES_DATA_1).getInputStream();
         String workflowDataTest=new String(inputStreamTest.readAllBytes());
-        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW,CREATED_BY_NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findById(BigInteger.valueOf(Long.parseLong(String.valueOf(1))))).thenReturn(java.util.Optional.ofNullable(workflowDefinitionTest));
@@ -167,11 +168,11 @@ class WorkflowServiceTest
         ObjectMapper objectMapperTest = new ObjectMapper();
         @Cleanup InputStream inputStreamTest = new ClassPathResource(TEST_PROCESSES_DATA_1).getInputStream();
         String workflowDataTest=new String(inputStreamTest.readAllBytes());
-        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW,CREATED_BY_NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findWorkflowsByQSorting(any(), any())).thenReturn(Stream.of(workflowDefinitionTest));
-         workflowServiceImpl.getAllProcesses(true,null,Q,sort).toList();
+         workflowServiceImpl.getAllProcesses(true,null,Q,sort).collect(Collectors.toList());
         verify(mockWorkflowDefinitionRepository,times(1)).findWorkflowsByQSorting(any(), any());
     }
     @Test
@@ -184,11 +185,11 @@ class WorkflowServiceTest
         ObjectMapper objectMapperTest = new ObjectMapper();
         @Cleanup InputStream inputStreamTest = new ClassPathResource(TEST_PROCESSES_DATA_1).getInputStream();
         String workflowDataTest=new String(inputStreamTest.readAllBytes());
-        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW,CREATED_BY_NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findWorkflowsByQSorting(any(), any())).thenReturn(Stream.of(workflowDefinitionTest));
-        workflowServiceImpl.getAllProcesses(false,null,Q,sort).toList();
+        workflowServiceImpl.getAllProcesses(false,null,Q,sort).collect(Collectors.toList());
         verify(mockWorkflowDefinitionRepository,times(1)).findWorkflowsByQSorting(any(), any());
     }
     @Test
@@ -197,11 +198,11 @@ class WorkflowServiceTest
         ObjectMapper objectMapperTest = new ObjectMapper();
         @Cleanup InputStream inputStreamTest = new ClassPathResource(TEST_PROCESSES_DATA_1).getInputStream();
         String workflowDataTest=new String(inputStreamTest.readAllBytes());
-        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW,CREATED_BY_NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findAll((Sort) any())).thenReturn(List.of(workflowDefinitionTest));
-         workflowServiceImpl.getAllProcesses(true,null,null, null).toList();
+         workflowServiceImpl.getAllProcesses(true,null,null, null).collect(Collectors.toList());
         verify(mockWorkflowDefinitionRepository,times(1)).findAll((Sort) any());
     }
     @Test
@@ -210,11 +211,11 @@ class WorkflowServiceTest
         ObjectMapper objectMapperTest = new ObjectMapper();
         @Cleanup InputStream inputStreamTest = new ClassPathResource(TEST_PROCESSES_DATA_1).getInputStream();
         String workflowDataTest=new String(inputStreamTest.readAllBytes());
-        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW,CREATED_BY_NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findAll((Sort) any())).thenReturn(List.of(workflowDefinitionTest));
-        workflowServiceImpl.getAllProcesses(false,null,null, null).toList();
+        workflowServiceImpl.getAllProcesses(false,null,null, null).collect(Collectors.toList());
         verify(mockWorkflowDefinitionRepository,times(1)).findAll((Sort) any());
     }
     @Test
@@ -223,11 +224,11 @@ class WorkflowServiceTest
         ObjectMapper objectMapperTest = new ObjectMapper();
         @Cleanup InputStream inputStreamTest = new ClassPathResource(TEST_PROCESSES_DATA_1).getInputStream();
         String workflowDataTest=new String(inputStreamTest.readAllBytes());
-        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW,CREATED_BY_NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findByIdIn(any())).thenReturn(List.of(workflowDefinitionTest));
-        workflowServiceImpl.getAllProcesses(true,DEPLOYMENT_ID_LIST,null, null).toList();
+        workflowServiceImpl.getAllProcesses(true,DEPLOYMENT_ID_LIST,null, null).collect(Collectors.toList());
         verify(mockWorkflowDefinitionRepository,times(1)).findByIdIn(any());
     }
 
@@ -246,7 +247,7 @@ class WorkflowServiceTest
         ObjectMapper objectMapperTest=new ObjectMapper();
         @Cleanup InputStream inputStreamTest = new ClassPathResource(TEST_PROCESSES_DATA_1).getInputStream();
         String workflowDataTest=new String(inputStreamTest.readAllBytes());
-        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW,CREATED_BY_NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         WorkflowDefinition workflowDefinitionTest=objectMapperTest.readValue(workflowDataTest,WorkflowDefinition.class);
         when(this.mockObjectMapper.convertValue(any(),eq(WorkflowSchema.class))).thenReturn(workflowSchemaTest);
         when(mockWorkflowDefinitionRepository.findByNameOrId(TEST_ID_OR_NAME_LIKE)).thenReturn(Collections.singletonList(workflowDefinitionTest));

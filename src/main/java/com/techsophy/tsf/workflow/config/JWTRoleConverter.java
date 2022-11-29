@@ -1,6 +1,7 @@
 package com.techsophy.tsf.workflow.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.techsophy.tsf.workflow.utils.TokenUtils;
 import com.techsophy.tsf.workflow.utils.WebClientWrapper;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -29,6 +30,7 @@ public class JWTRoleConverter implements Converter<Jwt, Collection<GrantedAuthor
 {
     private final WebClientWrapper webClientWrapper;
     private final ObjectMapper objectMapper;
+    private final TokenUtils tokenUtils;
     @Value(KEYCLOAK_ISSUER_URI)
     private final String keyCloakApi;
     private static final Logger logger = LoggerFactory.getLogger(JWTRoleConverter.class);
@@ -41,7 +43,7 @@ public class JWTRoleConverter implements Converter<Jwt, Collection<GrantedAuthor
         List<String> awgmentRolesList =new ArrayList<>();
         String token= jwt.getTokenValue();
         var client = webClientWrapper.createWebClient(token);
-        String userInfoResponse = webClientWrapper.webclientRequest(client,keyCloakApi+USER_INFO_URL,GET,null);
+        String userInfoResponse = webClientWrapper.webclientRequest(client,keyCloakApi+tokenUtils.getIssuerFromToken(jwt.getTokenValue())+USER_INFO_URL,GET,null);
         if(userInfoResponse.isEmpty())
         {
             logger.info(TOKEN_VERIFICATION_FAILED);

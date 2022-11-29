@@ -49,7 +49,7 @@ class WorkFlowAuditServiceImpTest
     void saveProcessTest() throws Exception
     {
         byte[] content ={10,20};
-        WorkflowAuditSchema workflowAuditSchema = new WorkflowAuditSchema(TEST_ID,PROCESS_ID,PROCESS_NAME,PROCESS_VERSION,content,CREATED_BY_ID_VALUE,Instant.now(),CREATED_BY_NAME,TEST_ID,Instant.now(),UPDATED_BY_NAME);
+        WorkflowAuditSchema workflowAuditSchema = new WorkflowAuditSchema(PROCESS_ID,PROCESS_ID, PROCESS_NAME,PROCESS_VERSION, PROCESS_CONTENT, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         WorkflowAuditDefinition workflowAuditDefinition=new WorkflowAuditDefinition();
         when(objectMapper.convertValue(workflowAuditSchema,WorkflowAuditDefinition.class)).thenReturn(workflowAuditDefinition);
         when(mockWorkflowDefinitionAuditRepo.save(workflowAuditDefinition)).thenReturn(workflowAuditDefinition.withId(BigInteger.valueOf(Long.parseLong(TEST_ID))));
@@ -97,7 +97,7 @@ class WorkFlowAuditServiceImpTest
         byte[] content ={10,20};
         WorkflowAuditDefinition workflowAuditDefinition=new WorkflowAuditDefinition(BigInteger.valueOf(1),BigInteger.valueOf(1),PROCESS_NAME,PROCESS_VERSION,content);
         when(mockWorkflowDefinitionAuditRepo.findById(BigInteger.valueOf(Long.parseLong(PROCESS_ID)),PROCESS_VERSION)).thenReturn(Optional.of(workflowAuditDefinition));
-        WorkflowAuditSchema workflowAuditSchema = new WorkflowAuditSchema(TEST_ID,PROCESS_ID,PROCESS_NAME,PROCESS_VERSION,content,CREATED_BY_ID_VALUE,Instant.now(),CREATED_BY_NAME,UPDATED_BY_ID_VALUE,Instant.now(),UPDATED_BY_NAME);
+        WorkflowAuditSchema workflowAuditSchema = new WorkflowAuditSchema(PROCESS_ID,PROCESS_ID, PROCESS_NAME,PROCESS_VERSION, PROCESS_CONTENT, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         when(objectMapper.convertValue(workflowAuditDefinition,WorkflowAuditSchema.class)).thenReturn(workflowAuditSchema);
         mockWorkflowServiceImpl.getProcessById(PROCESS_ID,PROCESS_VERSION);
         verify(mockWorkflowDefinitionAuditRepo,times(1)).findById(any(),any());

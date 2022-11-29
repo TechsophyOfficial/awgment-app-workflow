@@ -25,22 +25,7 @@ configurations {
 }
 
 repositories {
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
-    maven {
-        url = uri('https://nexus.techsophy.com/nexus/repository/maven-public/')
-        allowInsecureProtocol = true
-        credentials {
-            username=System.getenv('nexusUser')
-            password=System.getenv('nexusPassword')
-        }
-        metadataSources {
-            mavenPom()
-            artifact()
-            ignoreGradleMetadataRedirection()
-        }
-    }
+    mavenLocal()
     mavenCentral()
 }
 
@@ -71,8 +56,8 @@ dependencies {
 
     implementation 'io.github.origin-energy:java-snapshot-testing-junit5:3.2.7'
 
-    implementation 'com.techsophy:id-generator:1.0.0@jar'
-    implementation 'com.techsophy:multitenancy-mongo:1.0.0@jar'
+    implementation 'com.techsophy:id-generator:2.0.0'
+    implementation 'com.techsophy:multitenancy-mongo:1.0.0'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.1'
 
