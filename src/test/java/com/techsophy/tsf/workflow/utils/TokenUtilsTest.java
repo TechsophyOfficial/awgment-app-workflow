@@ -35,8 +35,7 @@ import java.util.Map;
 import static com.techsophy.tsf.workflow.constants.WorkflowTestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith({SpringExtension.class})
@@ -95,6 +94,19 @@ class TokenUtilsTest
         assertThatExceptionOfType(SecurityException.class)
                 .isThrownBy(() -> tokenUtils.getLoggedInUserId());
     }
+    @Test
+    void getLoggedInUserId()
+    {
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        Jwt jwt= mock(Jwt.class);
+        when(authentication.getPrincipal()).thenReturn(jwt);
+        String token = tokenUtils.getLoggedInUserId();
+        verify(authentication,times(1)).getPrincipal();
+    }
+
 
     @Test
     void getPaginationTest()

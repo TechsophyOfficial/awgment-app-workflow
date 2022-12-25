@@ -85,7 +85,7 @@ class WebClientWrapperTest {
         when(requestHeadersUriSpec.uri(LOCAL_HOST_URL)).thenReturn(requestHeadersSpecMock);
         when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
         when(responseSpecMock.onStatus(any(Predicate.class),any(Function.class))).thenCallRealMethod();
-        when(responseSpecMock.getStatus()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
+//        when(responseSpecMock.getStatus()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
         assertThrows(NullPointerException.class,
                 () -> webClientWrapper.webclientRequest(webClientMock, LOCAL_HOST_URL, GET, "avb")) ;
     }
@@ -99,7 +99,7 @@ class WebClientWrapperTest {
         when(requestBodyMock.bodyValue(TOKEN)).thenReturn(requestHeadersSpecMock);
         when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
         when(responseSpecMock.onStatus(any(Predicate.class),any(Function.class))).thenCallRealMethod();
-        when(responseSpecMock.getStatus()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
+//        when(responseSpecMock.getStatus()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
         assertThrows(NullPointerException.class,
                 () ->webClientWrapper.webclientRequest(webClientMock, LOCAL_HOST_URL, PUT, TOKEN)) ;
     }
@@ -113,7 +113,7 @@ class WebClientWrapperTest {
         when(requestBodyMock.bodyValue(TOKEN)).thenReturn(requestHeadersSpecMock);
         when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
         when(responseSpecMock.onStatus(any(Predicate.class),any(Function.class))).thenCallRealMethod();
-        when(responseSpecMock.getStatus()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
+//        when(responseSpecMock.getStatus()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
         assertThrows(NullPointerException.class,
                 () ->webClientWrapper.webclientRequest(webClientMock, LOCAL_HOST_URL, DELETE, TOKEN));
     }
@@ -127,7 +127,7 @@ class WebClientWrapperTest {
         when(requestBodyUriMock.uri(LOCAL_HOST_URL)).thenReturn(requestBodyMock);
         when(requestBodyMock.retrieve()).thenReturn(responseSpecMock);
         when(responseSpecMock.onStatus(any(Predicate.class),any(Function.class))).thenCallRealMethod();
-        when(responseSpecMock.getStatus()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
+//        when(responseSpecMock.getStatus()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
         assertThrows(NullPointerException.class,
                 () ->webClientWrapper.webclientRequest(webClientMock, LOCAL_HOST_URL, DELETE, null));
     }
@@ -141,7 +141,7 @@ class WebClientWrapperTest {
         when(requestBodyMock.bodyValue(TOKEN)).thenReturn(requestHeadersSpecMock);
         when(requestHeadersSpecMock.retrieve()).thenReturn(responseSpecMock);
         when(responseSpecMock.onStatus(any(Predicate.class),any(Function.class))).thenCallRealMethod();
-        when(responseSpecMock.getStatus()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
+//        when(responseSpecMock.getStatus()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
         assertThrows(NullPointerException.class,
                 () ->webClientWrapper.webclientRequest(webClientMock, LOCAL_HOST_URL, POST, TOKEN)) ;
     }
