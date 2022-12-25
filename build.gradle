@@ -94,11 +94,18 @@ test {
     useJUnitPlatform()
 }
 
-jacocoTestReport {
-    reports {
-        xml.enabled true
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.86
+            }
+        }
+
     }
 }
+check.dependsOn jacocoTestCoverageVerification
+
 jar {
     enabled = false
 }
