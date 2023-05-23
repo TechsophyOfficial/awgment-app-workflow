@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="Process_tyoovr6" name="Group Registration" isExecutable="true" camunda:versionTag="1">
+    <bpmn2:startEvent id="StartEvent_1">
+      <bpmn2:outgoing>Flow_1vtpmk5</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_1vtpmk5" sourceRef="StartEvent_1" targetRef="Gateway_0zp9uy0" />
+    <bpmn2:exclusiveGateway id="Gateway_0zp9uy0">
+      <bpmn2:incoming>Flow_1vtpmk5</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0p5imae</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_00uqd84</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="Flow_0p5imae" name="Registration" sourceRef="Gateway_0zp9uy0" targetRef="Activity_0szwhvv">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${action!='delete'}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_00uqd84" name="Delete" sourceRef="Gateway_0zp9uy0" targetRef="Activity_1tkv5xm">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${action=='delete'}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:callActivity id="Activity_1tkv5xm" name="Group Deletion" calledElement="Process_yyrk5jm">
+      <bpmn2:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_00uqd84</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0u1pyy3</bpmn2:outgoing>
+    </bpmn2:callActivity>
+    <bpmn2:endEvent id="Event_0ogh91d">
+      <bpmn2:incoming>Flow_0u1pyy3</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_0u1pyy3" sourceRef="Activity_1tkv5xm" targetRef="Event_0ogh91d" />
+    <bpmn2:serviceTask id="Activity_0szwhvv" name="Group Registration in keycloak">
+      <bpmn2:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">/accounts/v1/keycloak/groups</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="javascript">var name=S(execution.getVariable("groupData")).prop("name").value();
+var groupData=S(execution.getVariable("groupData"));
+var obj=new Object();
+obj.name=name;
+var strObject=S(JSON.stringify(obj)); 
+if(groupData.hasProp("groupId")){
+var id=S(execution.getVariable("groupData")).prop("groupId").value();
+strObject.prop("id",id);
+}
+JSON.stringify(JSON.parse(strObject));
+</camunda:script>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="groupKeycloakResponse">${response}</camunda:outputParameter>
+            <camunda:outputParameter name="groupKeycloakSuccessStatus">${statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>rest-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0p5imae</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_14tllmh</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="Flow_14tllmh" sourceRef="Activity_0szwhvv" targetRef="Activity_1cfjrbn" />
+    <bpmn2:sequenceFlow id="Flow_0lb5dvw" sourceRef="Activity_1o3kirt" targetRef="Event_07ftc7o" />
+    <bpmn2:serviceTask id="Activity_1o3kirt" name="Delete Group in keycloak">
+      <bpmn2:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="javascript">var groupId=S(execution.getVariable("databaseRegistrationResponse")).prop("data").prop("groupId").value();
+var url="/accounts/v1/keycloak/groups/"+groupId;
+execution.setVariable("url",url);
+url;</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">DELETE</camunda:inputParameter>
+            <camunda:outputParameter name="deleteGroupResponse">${response}</camunda:outputParameter>
+            <camunda:outputParameter name="deleteResponseStatusCode">${statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>rest-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_1hm9sox</bpmn2:incoming>
+      <bpmn2:incoming>Flow_1txm3id</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0lb5dvw</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:endEvent id="Event_1w3cr1w">
+      <bpmn2:incoming>Flow_0nvt8ie</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:serviceTask id="Activity_1cfjrbn" name="Group registration in db">
+      <bpmn2:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">/accounts/v1/groups</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="javascript">var groupInfo=new Object(); 
+groupInfo=JSON.parse(execution.getVariable("groupData")); 
+var groupDataPayload=S(JSON.stringify(groupInfo));
+execution.setVariable("test",S(execution.getVariable("groupKeycloakResponse")));
+groupDataPayload.prop("groupId",S(execution.getVariable("groupKeycloakResponse")).prop("data").elements().get(0).prop("id").value()); 
+execution.setVariable("test",groupDataPayload);
+JSON.stringify(JSON.parse(groupDataPayload));
+</camunda:script>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="databaseRegistrationResponse">${response}</camunda:outputParameter>
+            <camunda:outputParameter name="databaseGroupStatusCode">${statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>rest-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_14tllmh</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1jo8vsn</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="Flow_0nvt8ie" sourceRef="Activity_0taa098" targetRef="Event_1w3cr1w" />
+    <bpmn2:serviceTask id="Activity_0taa098" name="assign roles to groups">
+      <bpmn2:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="javascript">var databaseId=execution.getVariable("databaseId");
+var url="/accounts/v1/groups/"+databaseId+"/roles";
+execution.setVariable("url",url);
+url;</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="javascript">var rolesdata=new Object();
+var p=execution.getVariable("groupKeycloakResponse");
+var id=S(p).prop("data").elements().get(0).prop("id").value();
+var q=execution.getVariable("groupData");
+var roles=S(q).prop("roles");
+rolesdata.groupId= id;
+var finalRole=S(JSON.stringify(rolesdata));
+finalRole.prop("roles",roles);
+execution.setVariable("finalRole",finalRole);
+var a=JSON.stringify(JSON.parse(finalRole));
+execution.setVariable("dummy",a);
+a;</camunda:script>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="rolesResponse">${response}</camunda:outputParameter>
+            <camunda:outputParameter name="rolesStatus">${statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>rest-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="javascript">var databaseId=S(execution.getVariable("databaseRegistrationResponse")).prop("data").prop("id").value();
+execution.setVariable("databaseId",databaseId);
+</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0lx83za</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0nvt8ie</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:exclusiveGateway id="Gateway_0lgm2hi">
+      <bpmn2:incoming>Flow_1jo8vsn</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0lx83za</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0rdera2</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="Flow_0lx83za" name="rolesChecking" sourceRef="Gateway_0lgm2hi" targetRef="Activity_0taa098">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${S(execution.getVariable("groupData")).hasProp("roles")}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="Event_0tdvmk8">
+      <bpmn2:incoming>Flow_0rdera2</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_0rdera2" sourceRef="Gateway_0lgm2hi" targetRef="Event_0tdvmk8">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${!S(execution.getVariable("groupData")).hasProp("roles")}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:boundaryEvent id="Event_1xr1xh6" attachedToRef="Activity_0szwhvv">
+      <bpmn2:outgoing>Flow_14sbdta</bpmn2:outgoing>
+      <bpmn2:errorEventDefinition id="ErrorEventDefinition_169gxtm" camunda:errorCodeVariable="errorCode" camunda:errorMessageVariable="errorMessage" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="Flow_14sbdta" sourceRef="Event_1xr1xh6" targetRef="Event_0r3u2j3" />
+    <bpmn2:endEvent id="Event_0r3u2j3">
+      <bpmn2:incoming>Flow_10yse62</bpmn2:incoming>
+      <bpmn2:incoming>Flow_14sbdta</bpmn2:incoming>
+      <bpmn2:errorEventDefinition id="ErrorEventDefinition_16w0tyy" errorRef="Error_1i7h3ig" />
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="Event_07ftc7o">
+      <bpmn2:incoming>Flow_0lb5dvw</bpmn2:incoming>
+      <bpmn2:errorEventDefinition id="ErrorEventDefinition_1l2fo3w" errorRef="Error_1i7h3ig" />
+    </bpmn2:endEvent>
+    <bpmn2:boundaryEvent id="Event_0vwp36d" attachedToRef="Activity_1cfjrbn">
+      <bpmn2:outgoing>Flow_1hm9sox</bpmn2:outgoing>
+      <bpmn2:errorEventDefinition id="ErrorEventDefinition_0r0rri5" camunda:errorCodeVariable="errorCode" camunda:errorMessageVariable="errorMessage" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="Flow_1jo8vsn" sourceRef="Activity_1cfjrbn" targetRef="Gateway_0lgm2hi" />
+    <bpmn2:sequenceFlow id="Flow_1hm9sox" sourceRef="Event_0vwp36d" targetRef="Activity_1o3kirt" />
+    <bpmn2:boundaryEvent id="Event_0a84sek" attachedToRef="Activity_1o3kirt">
+      <bpmn2:outgoing>Flow_10yse62</bpmn2:outgoing>
+      <bpmn2:errorEventDefinition id="ErrorEventDefinition_1ext2rs" camunda:errorCodeVariable="errorCode" camunda:errorMessageVariable="errorMessage" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="Flow_10yse62" sourceRef="Event_0a84sek" targetRef="Event_0r3u2j3" />
+    <bpmn2:boundaryEvent id="Event_0itnqcc" attachedToRef="Activity_0taa098">
+      <bpmn2:outgoing>Flow_1txm3id</bpmn2:outgoing>
+      <bpmn2:errorEventDefinition id="ErrorEventDefinition_0h9zyky" camunda:errorCodeVariable="errorCode" camunda:errorMessageVariable="errorMessage" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="Flow_1txm3id" sourceRef="Event_0itnqcc" targetRef="Activity_1o3kirt" />
+  </bpmn2:process>
+  <bpmn2:error id="Error_1i7h3ig" name="ERROR" errorCode="${errorCode}" camunda:errorMessage="${errorMessage}" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_tyoovr6">
+      <bpmndi:BPMNEdge id="Flow_1txm3id_di" bpmnElement="Flow_1txm3id">
+        <di:waypoint x="1990" y="112" />
+        <di:waypoint x="1990" y="100" />
+        <di:waypoint x="1200" y="100" />
+        <di:waypoint x="1200" y="70" />
+        <di:waypoint x="1300" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10yse62_di" bpmnElement="Flow_10yse62">
+        <di:waypoint x="1400" y="-18" />
+        <di:waypoint x="1400" y="-100" />
+        <di:waypoint x="798" y="-100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hm9sox_di" bpmnElement="Flow_1hm9sox">
+        <di:waypoint x="890" y="112" />
+        <di:waypoint x="890" y="40" />
+        <di:waypoint x="1300" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jo8vsn_di" bpmnElement="Flow_1jo8vsn">
+        <di:waypoint x="890" y="170" />
+        <di:waypoint x="1495" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14sbdta_di" bpmnElement="Flow_14sbdta">
+        <di:waypoint x="580" y="112" />
+        <di:waypoint x="580" y="-100" />
+        <di:waypoint x="762" y="-100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rdera2_di" bpmnElement="Flow_0rdera2">
+        <di:waypoint x="1520" y="195" />
+        <di:waypoint x="1520" y="280" />
+        <di:waypoint x="1692" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lx83za_di" bpmnElement="Flow_0lx83za">
+        <di:waypoint x="1545" y="170" />
+        <di:waypoint x="1890" y="170" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1585" y="153" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nvt8ie_di" bpmnElement="Flow_0nvt8ie">
+        <di:waypoint x="1990" y="170" />
+        <di:waypoint x="2372" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lb5dvw_di" bpmnElement="Flow_0lb5dvw">
+        <di:waypoint x="1400" y="40" />
+        <di:waypoint x="1531" y="40" />
+        <di:waypoint x="1531" y="-90" />
+        <di:waypoint x="1662" y="-90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14tllmh_di" bpmnElement="Flow_14tllmh">
+        <di:waypoint x="580" y="170" />
+        <di:waypoint x="790" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u1pyy3_di" bpmnElement="Flow_0u1pyy3">
+        <di:waypoint x="310" y="470" />
+        <di:waypoint x="553" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00uqd84_di" bpmnElement="Flow_00uqd84">
+        <di:waypoint x="260" y="195" />
+        <di:waypoint x="260" y="430" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="244" y="360" width="33" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0p5imae_di" bpmnElement="Flow_0p5imae">
+        <di:waypoint x="285" y="170" />
+        <di:waypoint x="480" y="170" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="283" y="153" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vtpmk5_di" bpmnElement="Flow_1vtpmk5">
+        <di:waypoint x="168" y="170" />
+        <di:waypoint x="235" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="132" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0zp9uy0_di" bpmnElement="Gateway_0zp9uy0" isMarkerVisible="true">
+        <dc:Bounds x="235" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pebzl4_di" bpmnElement="Activity_1tkv5xm">
+        <dc:Bounds x="210" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ogh91d_di" bpmnElement="Event_0ogh91d">
+        <dc:Bounds x="553" y="452" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0w52x73_di" bpmnElement="Activity_0szwhvv">
+        <dc:Bounds x="480" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vdii6k_di" bpmnElement="Activity_1o3kirt">
+        <dc:Bounds x="1300" y="0" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1w3cr1w_di" bpmnElement="Event_1w3cr1w">
+        <dc:Bounds x="2372" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04sdo3j_di" bpmnElement="Activity_1cfjrbn">
+        <dc:Bounds x="790" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19p10nt_di" bpmnElement="Activity_0taa098">
+        <dc:Bounds x="1890" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0lgm2hi_di" bpmnElement="Gateway_0lgm2hi" isMarkerVisible="true">
+        <dc:Bounds x="1495" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0tdvmk8_di" bpmnElement="Event_0tdvmk8">
+        <dc:Bounds x="1692" y="262" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0yq1sx5_di" bpmnElement="Event_0r3u2j3">
+        <dc:Bounds x="762" y="-118" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0s39idg_di" bpmnElement="Event_07ftc7o">
+        <dc:Bounds x="1662" y="-108" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1490" y="425" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_02o0khl_di" bpmnElement="Event_0itnqcc">
+        <dc:Bounds x="1972" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1bz2qi5_di" bpmnElement="Event_0a84sek">
+        <dc:Bounds x="1382" y="-18" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ldleh2_di" bpmnElement="Event_0vwp36d">
+        <dc:Bounds x="872" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19fs3im_di" bpmnElement="Event_1xr1xh6">
+        <dc:Bounds x="562" y="112" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

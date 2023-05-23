@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="Process_yyrk5jm" name="group Deletion" isExecutable="true" camunda:versionTag="1">
+    <bpmn2:startEvent id="StartEvent_1">
+      <bpmn2:outgoing>Flow_1vtpmk5</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="Flow_1vtpmk5" sourceRef="StartEvent_1" targetRef="Activity_0szwhvv">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">var 
+groupId=S(execution.getVariable("groupData")).prop("groupId").value();
+execution.setVariable("groupId",groupId);
+
+var 
+id=S(execution.getVariable("groupData")).prop("id").value();
+execution.setVariable("id",id);
+
+
+
+</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:serviceTask id="Activity_0szwhvv" name="get Group Keycloak Data">
+      <bpmn2:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="javascript">var groupId=execution.getVariable("groupId");
+var url="/accounts/v1/keycloak/groups/"+groupId;
+execution.setVariable("url",url);
+url;</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="groupKeycloakDataResponse">${response}</camunda:outputParameter>
+            <camunda:outputParameter name="groupKeycloakDataStatus">${statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>rest-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_1vtpmk5</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0kmof38</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="Flow_0kmof38" sourceRef="Activity_0szwhvv" targetRef="Activity_1m4bkqv" />
+    <bpmn2:exclusiveGateway id="Gateway_1l6xlrp">
+      <bpmn2:incoming>Flow_19jlksa</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_02jsufu</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_0pn0yh7</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:endEvent id="Event_11al33v">
+      <bpmn2:incoming>Flow_02jsufu</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_02jsufu" name="failed" sourceRef="Gateway_1l6xlrp" targetRef="Event_11al33v">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${deletionKeycloakStatusCode!=200}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_0pn0yh7" name="success" sourceRef="Gateway_1l6xlrp" targetRef="Activity_01wq9ug">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${deletionKeycloakStatusCode==200}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:exclusiveGateway id="Gateway_0ozer1q">
+      <bpmn2:incoming>Flow_1vyamkq</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0x6zq19</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_02wtqyv</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="Flow_1vyamkq" sourceRef="Activity_01wq9ug" targetRef="Gateway_0ozer1q" />
+    <bpmn2:endEvent id="Event_1xzziq6">
+      <bpmn2:incoming>Flow_0x6zq19</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_0x6zq19" sourceRef="Gateway_0ozer1q" targetRef="Event_1xzziq6">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${databaseDeletionStatusCode==200}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="Event_0wzr6ab">
+      <bpmn2:incoming>Flow_02wtqyv</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_02wtqyv" sourceRef="Gateway_0ozer1q" targetRef="Event_0wzr6ab">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${databaseDeletionStatusCode!=200}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:serviceTask id="Activity_01wq9ug" name="Group Deletion in database">
+      <bpmn2:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">DELETE</camunda:inputParameter>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="javascript">var id=execution.getVariable("id");
+var url="/accounts/v1/groups/"+id;
+execution.setVariable("url",url);
+url;</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="databaseDeletionResponse">${response}</camunda:outputParameter>
+            <camunda:outputParameter name="databaseDeletionStatusCode">${statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>rest-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0pn0yh7</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_1vyamkq</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="Flow_19jlksa" sourceRef="Activity_1m4bkqv" targetRef="Gateway_1l6xlrp" />
+    <bpmn2:serviceTask id="Activity_1m4bkqv" name="Group Deletion in Keycloak">
+      <bpmn2:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="javascript">var groupId=execution.getVariable("groupId");
+var url="/accounts/v1/keycloak/groups/"+groupId;
+execution.setVariable("url",url);
+url;</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">DELETE</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="deletionKeycloakResponse">${response}</camunda:outputParameter>
+            <camunda:outputParameter name="deletionKeycloakStatusCode">${statusCode}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>rest-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>Flow_0kmof38</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_19jlksa</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_yyrk5jm">
+      <bpmndi:BPMNEdge id="Flow_19jlksa_di" bpmnElement="Flow_19jlksa">
+        <di:waypoint x="350" y="170" />
+        <di:waypoint x="625" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02wtqyv_di" bpmnElement="Flow_02wtqyv">
+        <di:waypoint x="1180" y="195" />
+        <di:waypoint x="1180" y="290" />
+        <di:waypoint x="1332" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0x6zq19_di" bpmnElement="Flow_0x6zq19">
+        <di:waypoint x="1205" y="170" />
+        <di:waypoint x="1472" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vyamkq_di" bpmnElement="Flow_1vyamkq">
+        <di:waypoint x="940" y="170" />
+        <di:waypoint x="1155" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pn0yh7_di" bpmnElement="Flow_0pn0yh7">
+        <di:waypoint x="675" y="170" />
+        <di:waypoint x="840" y="170" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="681" y="152" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02jsufu_di" bpmnElement="Flow_02jsufu">
+        <di:waypoint x="650" y="195" />
+        <di:waypoint x="650" y="272" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="652" y="231" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kmof38_di" bpmnElement="Flow_0kmof38">
+        <di:waypoint x="80" y="170" />
+        <di:waypoint x="250" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vtpmk5_di" bpmnElement="Flow_1vtpmk5">
+        <di:waypoint x="-142" y="170" />
+        <di:waypoint x="-20" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="-178" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gbto3t_di" bpmnElement="Activity_0szwhvv">
+        <dc:Bounds x="-20" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1l6xlrp_di" bpmnElement="Gateway_1l6xlrp" isMarkerVisible="true">
+        <dc:Bounds x="625" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_11al33v_di" bpmnElement="Event_11al33v">
+        <dc:Bounds x="632" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0ozer1q_di" bpmnElement="Gateway_0ozer1q" isMarkerVisible="true">
+        <dc:Bounds x="1155" y="145" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xzziq6_di" bpmnElement="Event_1xzziq6">
+        <dc:Bounds x="1472" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0wzr6ab_di" bpmnElement="Event_0wzr6ab">
+        <dc:Bounds x="1332" y="272" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ieczeh_di" bpmnElement="Activity_01wq9ug">
+        <dc:Bounds x="840" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19zor4v_di" bpmnElement="Activity_1m4bkqv">
+        <dc:Bounds x="250" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
