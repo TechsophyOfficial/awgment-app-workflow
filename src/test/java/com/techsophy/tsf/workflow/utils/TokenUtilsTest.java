@@ -11,6 +11,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
@@ -34,8 +35,7 @@ import java.util.Map;
 import static com.techsophy.tsf.workflow.constants.WorkflowTestConstants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith({SpringExtension.class})
@@ -94,6 +94,19 @@ class TokenUtilsTest
         assertThatExceptionOfType(SecurityException.class)
                 .isThrownBy(() -> tokenUtils.getLoggedInUserId());
     }
+    @Test
+    void getLoggedInUserId()
+    {
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        Jwt jwt= mock(Jwt.class);
+        when(authentication.getPrincipal()).thenReturn(jwt);
+        String token = tokenUtils.getLoggedInUserId();
+        verify(authentication,times(1)).getPrincipal();
+    }
+
 
     @Test
     void getPaginationTest()
@@ -107,7 +120,7 @@ class TokenUtilsTest
     @Test
     void getPaginationTestContentNullTest()
     {
-        WorkflowSchema workflowSchemaTest =new WorkflowSchema(PROCESS_ID,PROCESS_NAME,PROCESS_CONTENT,PROCESS_VERSION,CREATED_BY_ID_VALUE,CREATED_ON_NOW,CREATED_BY_NAME,UPDATED_BY_ID_VALUE,UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest =new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         List<WorkflowSchema> content=new ArrayList();
         content.add(workflowSchemaTest);
         Page page = mock(Page.class);
@@ -115,6 +128,24 @@ class TokenUtilsTest
         PaginationResponsePayload response=tokenUtils.getPaginationResponsePayload(page,Collections.emptyList());
         Assertions.assertNotNull(response);
     }
+//    @Test
+//    void getTokenFromContextAuthentication()
+//    {
+//        try (MockedStatic<SecurityContextHolder> dummy = Mockito.mockStatic(SecurityContextHolder.class)) {
+//            dummy.when(() -> SecurityContextHolder.getContext())
+//                    .thenReturn(null);
+//            Assertions.assertThrows(SecurityException.class,()->tokenUtils.getTokenFromContext());
+//        }
+////        Authentication authentication = mock(Authentication.class);
+////        SecurityContext securityContext = mock(SecurityContext.class);
+////        SecurityContextHolder securityContextHolder = mock(SecurityContextHolder.class);
+////        Mockito.when(securityContext.getAuthentication()).thenReturn(null);
+////        Mockito.when(SecurityContextHolder.getContext()).thenReturn(null);
+////        SecurityContextHolder.setContext(securityContext);
+////        Jwt jwt= mock(Jwt.class);
+////        when(authentication.getPrincipal()).thenReturn(jwt);
+////        Assertions.assertThrows(SecurityException.class,()->tokenUtils.getTokenFromContext());
+//    }
 
     @Test
     void getPageExceptionTest()

@@ -22,41 +22,41 @@ public class Logging
     void beforeController(JoinPoint joinPoint)
     {
         String name = joinPoint.getSignature().getName();
-        logger.info(name+IS_INVOKED_IN_CONTROLLER);
+        logger.info(IS_INVOKED_IN_CONTROLLER,name);
     }
 
     @After(CONTROLLER_CLASS_PATH)
     void afterController(JoinPoint joinPoint)
     {
         String name = joinPoint.getSignature().getName();
-        logger.info(name+EXECUTION_IS_COMPLETED_IN_CONTROLLER);
+        logger.info(EXECUTION_IS_COMPLETED_IN_CONTROLLER,name);
     }
 
     @Before(SERVICE_CLASS_PATH)
     void beforeService(JoinPoint joinPoint)
     {
         String name = joinPoint.getSignature().getName();
-        logger.info(name+IS_INVOKED_IN_SERVICE);
+        logger.info(IS_INVOKED_IN_SERVICE,name);
     }
 
     @After(SERVICE_CLASS_PATH)
     void afterService(JoinPoint joinPoint)
     {
         String name = joinPoint.getSignature().getName();
-        logger.info(name+EXECUTION_IS_COMPLETED_IN_SERVICE);
+        logger.info(EXECUTION_IS_COMPLETED_IN_SERVICE,name);
     }
 
     @AfterThrowing(value= CONTROLLER_CLASS_PATH,throwing=EXCEPTION)
     public void logAfterThrowingController(JoinPoint joinPoint, Exception ex)
     {
-        logger.error(EXCEPTION_THROWN + joinPoint.getSignature().getName() +BRACKETS_IN_CONTROLLER);
-        logger.error(CAUSE+ ex.getMessage());
+        logger.error(EXCEPTION_THROWN ,joinPoint.getSignature().getName(),BRACKETS_IN_CONTROLLER);
+        logger.error(CAUSE,ex.getMessage());
     }
 
     @AfterThrowing(value=SERVICE_CLASS_PATH,throwing=EXCEPTION)
     public void logAfterThrowingService(JoinPoint joinPoint, Exception ex)
     {
-        logger.error(EXCEPTION_THROWN + joinPoint.getSignature().getName() +BRACKETS_IN_SERVICE);
-        logger.error(CAUSE + ex.getMessage());
+        logger.error(EXCEPTION_THROWN ,joinPoint.getSignature().getName(),BRACKETS_IN_SERVICE);
+        logger.error(CAUSE ,ex.getMessage());
     }
 }

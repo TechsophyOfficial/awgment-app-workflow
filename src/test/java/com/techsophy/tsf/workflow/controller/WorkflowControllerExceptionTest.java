@@ -104,7 +104,7 @@ class WorkflowControllerExceptionTest
     {
         Mockito.when(mockWorkflowController.saveProcess(any(),any(),any(),any())).thenThrow(new InvalidInputException(TOKEN_NOT_NULL,TOKEN_NOT_NULL));
         ObjectMapper objectMapperTest = new ObjectMapper();
-        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, NAME, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW,UPDATED_BY_NAME);
+        WorkflowSchema workflowSchemaTest=new WorkflowSchema(PROCESS_ID, PROCESS_NAME, PROCESS_CONTENT, PROCESS_VERSION, CREATED_BY_ID_VALUE, CREATED_ON_NOW, UPDATED_BY_ID_VALUE, UPDATED_ON_NOW);
         RequestBuilder requestBuilderTest = MockMvcRequestBuilders.post(BASE_URL + VERSION_V1 +PROCESSES_URL)
                 .param(PARAM_ID,PARAM_ID_VALUE).param(PARAM_NAME,PARAM_NAME_VALUE).param(PARAM_VERSION,PARAM_VERSION_VALUE).param(PARAM_CONTENT,PARAM_CONTENT_VALUE)
                 .contentType(MediaType.APPLICATION_JSON);

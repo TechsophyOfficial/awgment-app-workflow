@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -90,10 +91,4 @@ class TokenUtilsPaginationTest
                 .isThrownBy(() -> tokenUtils.getLoggedInUserId());
     }
 
-    @Test
-    void getSortByTest()
-    {
-        String[] dogs = {"Pitbull", "Poodle", "Lab", "Pug"};
-        tokenUtils.getSortBy(dogs);
-    }
 }

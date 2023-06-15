@@ -84,7 +84,6 @@ public class WorkflowServiceImpl implements WorkflowService
         }
         processData.setUpdatedOn(Instant.now());
         processData.setUpdatedById(loggedInUserId);
-        processData.setUpdatedByName(loggedInUserDetails.get(FIRST_NAME)+SPACE+loggedInUserDetails.get(LAST_NAME));
         WorkflowDefinition workflowDefinition=this.processDefinitionRepository.save(processData);
         WorkflowAuditSchema workflowAuditSchema =this.objectMapper.convertValue(processData,WorkflowAuditSchema.class);
         workflowAuditSchema.setId(idGeneratorImpl.nextId().toString());
@@ -189,7 +188,6 @@ public class WorkflowServiceImpl implements WorkflowService
         workflowDefinition = new WorkflowDefinition(uniqueId, name, version, content);
         workflowDefinition.setCreatedOn(Instant.now());
         workflowDefinition.setCreatedById(loggedInUserId);
-        workflowDefinition.setCreatedByName(loggedInUserDetails.get(FIRST_NAME)+SPACE+loggedInUserDetails.get(LAST_NAME));
         return workflowDefinition;
     }
 }
